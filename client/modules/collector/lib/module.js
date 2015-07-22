@@ -1,0 +1,2 @@
+angular
+  .module('crave.collector', []);

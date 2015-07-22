@@ -1,0 +1,17 @@
+<!-- <meteor-include src="loginButtons"></meteor-include> -->
+
+<h2>Collector</h2>
+
+<form ng-submit="collector.onSubmit()">
+  <input ng-model="collector.near" ng-focus="collector.ll = ''" type="text" placeholder="Enter location">
+  OR
+  <input ng-model="collector.ll" ng-focus="collector.near = ''" type="text" placeholder="Enter lat, long">
+  <button ng-disabled="collector.btnDisabled">Get Location</button>
+  <strong>{{collector.message}}</strong>
+</form>
+
+<br>
+
+
+
+<!-- <h3>{{collector.dbCount}} Locations in Database</h3> -->

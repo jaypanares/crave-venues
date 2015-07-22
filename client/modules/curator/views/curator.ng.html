@@ -1,0 +1,32 @@
+<h2>CURATOR</h2>
+
+<em>{{curator.loading}}</em>
+<select ng-options="item.foursquareData.venue.name for item in curator.collection | orderBy: 'foursquareData.venue.name'"
+  ng-model="curator.selected"
+  ng-change="curator.getMedia()"
+  ng-disabled="curator.loading || curator.message">
+    <option value=""> ----- Select a venue ----- </option>
+  </select>
+
+<br>
+
+<strong>{{curator.message}}</strong>
+
+<br>
+
+<div ng-repeat="item in curator.curatedMedia track by item.id">
+  <img ng-src="{{item.images.thumbnail.url}}">
+  <br>
+  <button ng-click="curator.flagPhoto(item)"
+    ng-disabled="item.flagged >= 5">Flag Photo ({{item.flagged}})</button>
+  <br><br>
+</div>
+
+<br>
+
+<div ng-show="curator.curatedMedia.length > 0">
+  <button ng-click="curator.venueSave()"
+    ng-disabled="curator.saving">Save Venue</button>
+  <button ng-click="curator.venueCancel()"
+    ng-disabled="curator.saving">Cancel</button>{{curator.saving}}
+</div>

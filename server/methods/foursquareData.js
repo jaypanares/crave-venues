@@ -4,7 +4,7 @@ var foursquareParams = {
   client_secret: 'NOATEYKMV1XPNZEXZVGNVVN2R22QP5HVPXALSTMDXLMVUNAT',
   v: '20150716',
   m: 'foursquare',
-  limit: 5,
+  limit: 50,
   offset: 0
 };
 
@@ -46,11 +46,11 @@ function getFoursquareData(near, ll, callback) {
           }
         });
 
-        // foursquareParams.offset += 50;
-        // getFoursquareData(near, ll, callback);
-        console.log('TOTAL VENUES FETCHED: ', Venues.find().count());
-        foursquareParams.offset = 0;
-        callback(null, {status: 'success'});
+        foursquareParams.offset += 50;
+        getFoursquareData(near, ll, callback);
+        // console.log('TOTAL VENUES FETCHED: ', Venues.find().count());
+        // foursquareParams.offset = 0;
+        // callback(null, {status: 'success'});
       }else {
         console.log('TOTAL VENUES FETCHED: ', Venues.find().count());
         foursquareParams.offset = 0;

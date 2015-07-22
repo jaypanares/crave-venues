@@ -15,7 +15,7 @@
 <br>
 
 <div ng-repeat="item in curator.curatedMedia track by item.id">
-  <img ng-src="{{item.images.thumbnail.url}}">
+  <img ng-src="{{item.images.low_resolution.url}}">
   <br>
   <button ng-click="curator.flagPhoto(item)"
     ng-disabled="item.flagged >= 5">Flag Photo ({{item.flagged}})</button>

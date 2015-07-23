@@ -2,12 +2,11 @@ Meteor.publish('venuesCount', function () {
   Counts.publish(this, 'venuesCount', Venues.find());
 });
 
-Meteor.publish('venues', function (userId) {
+Meteor.publish('venues', function () {
   return Venues.find({
     $and:[
       {instagramLocation: {$ne: null}},
-      // {curatedMedia: null},
-      {$or: [{sessionId: null}, {sessionId: ''}, {sessionId: userId}]},
+      {$or: [{sessionId: null}, {sessionId: ''}, {sessionId: this.userId}]},
       {$or: [{curated: {$lt: 5}}, {curated: null}]}
     ]
   }, {
@@ -15,7 +14,6 @@ Meteor.publish('venues', function (userId) {
       'foursquareData.venue.id': 1,
       'foursquareData.venue.name': 1,
       'instagramLocation.data.id': 1,
-      // instagramMedia: 1,
       curatedMedia: 1,
       curated: 1,
       sessionId: 1
@@ -24,7 +22,8 @@ Meteor.publish('venues', function (userId) {
 });
 
 Meteor.publish('adminVenues', function () {
-  return Venues.find({}, {
+  var selector = {};
+  var options = {
     fields: {
       'foursquareData.venue.id': 1,
       'foursquareData.venue.name': 1,
@@ -32,5 +31,10 @@ Meteor.publish('adminVenues', function () {
       curatedMedia: 1,
       curated: 1
     }
-  });
+  };
+
+  if (this.userId) {
+    return Venues.find(selector, options);
+  }
+  return;
 });

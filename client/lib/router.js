@@ -3,7 +3,6 @@ angular
   .config(RouterConfig);
 
 RouterConfig.$inject = ['$urlRouterProvider', '$stateProvider', '$locationProvider'];
-
 function RouterConfig($urlRouterProvider, $stateProvider, $locationProvider) {
   $locationProvider.html5Mode(true);
 

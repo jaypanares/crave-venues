@@ -1,17 +1,49 @@
-<!-- <meteor-include src="loginButtons"></meteor-include> -->
+<meteor-include src="loginButtons"></meteor-include>
 
 <h2>Collector</h2>
 
-<form ng-submit="collector.onSubmit()">
-  <input ng-model="collector.near" ng-focus="collector.ll = ''" type="text" placeholder="Enter location">
-  OR
-  <input ng-model="collector.ll" ng-focus="collector.near = ''" type="text" placeholder="Enter lat, long">
-  <button ng-disabled="collector.btnDisabled">Get Location</button>
-  <strong>{{collector.message}}</strong>
-</form>
+<div ng-if="$root.currentUser">
+  <form ng-submit="collector.onSubmit()"
+    ng-disabled="collector.formDisabled">
+    <input ng-model="collector.near" ng-focus="collector.ll = ''" type="text" placeholder="Enter location">
+    OR
+    <input ng-model="collector.ll" ng-focus="collector.near = ''" type="text" placeholder="Enter lat, long">
+    <button>Get Location</button>
+    <strong>{{collector.message}}</strong>
+  </form>
 
-<br>
+  <br>
 
+  <em>{{collector.loading}}</em>
+  <select ng-options="item.foursquareData.venue.name for item in collector.collection | orderBy: 'foursquareData.venue.name'"
+    ng-model="collector.selected"
+    ng-change="collector.getMedia(item)"
+    ng-disabled="collector.loading || collector.selectDisabled">
+      <option value=""> ----- Select a venue ----- </option>
+    </select>
+  <div ng-if="collector.selected">
+    <strong> Curated count: {{collector.curatedCount}}</strong>
+    <button ng-click="collector.resetCurated()">Reset curated count</button>
+  </div>
+
+  <br>
+
+  <div ng-repeat="item in collector.curatedMedia track by item.id">
+    <img ng-src="{{item.images.low_resolution.url}}">
+    <br>
+    <button ng-click="collector.flagPhoto(item)"
+      ng-disabled="item.flagged >= 5">Flag Photo ({{item.flagged}})</button>
+    <button ng-click="collector.resetPhoto(item)">Reset Flag</button>
+    <br><br>
+  </div>
+
+  <div ng-show="collector.curatedMedia.length > 0">
+    <button ng-click="collector.venueSave()"
+      ng-disabled="collector.saving">Save Venue</button>
+    <button ng-click="curator.venueCancel()"
+      ng-disabled="collector.saving">Cancel</button>{{collector.saving}}
+  </div>
+</div>
 
 
 <!-- <h3>{{collector.dbCount}} Locations in Database</h3> -->

@@ -2,8 +2,8 @@ angular
   .module('crave.curator')
   .controller('CuratorCtrl', CuratorCtrl);
 
-CuratorCtrl.$inject = ['$scope', '$meteor', '_'];
-function CuratorCtrl($scope, $meteor, _) {
+CuratorCtrl.$inject = ['$scope', '$meteor', '_', '$rootScope'];
+function CuratorCtrl($scope, $meteor, _, $rootScope) {
   var vm = this;
 
   vm.sessionId = new Date().toISOString();
@@ -13,13 +13,16 @@ function CuratorCtrl($scope, $meteor, _) {
   vm.venueCancel = venueCancel;
   vm.flagPhoto = flagPhoto;
 
-  Meteor.insecureUserLogin(vm.sessionId);
-
-  $scope.$meteorSubscribe('anonymous');
+  $scope.$meteorSubscribe('anonymous')
+    .then(function () {
+      if (!$rootScope.currentUser) {
+        Meteor.insecureUserLogin(vm.sessionId);
+      }
+    });
 
   $scope.$meteorAutorun(function () {
     $scope
-      .$meteorSubscribe('venues', Meteor.userId())
+      .$meteorSubscribe('venues')
       .then(function () {
         vm.collection = $scope.$meteorCollection(Venues, false);
         vm.loading = '';
@@ -46,7 +49,7 @@ function CuratorCtrl($scope, $meteor, _) {
       vm.instagramId = vm.selected.instagramLocation.data[0].id;
       vm.query = { 'foursquareData.venue.id': vm.foursquareId };
 
-      $meteor.call('setSession', Meteor.userId(), vm.query)
+      $meteor.call('setSession', $rootScope.currentUser._id, vm.query)
         .catch(setSessionError);
     }
 
@@ -71,7 +74,7 @@ function CuratorCtrl($scope, $meteor, _) {
     vm.saving = 'Saving venue...';
 
     $meteor
-      .call('venueSave', vm.curatedMedia, vm.query)
+      .call('venueSave', null, vm.curatedMedia, vm.query)
       .then(saveCallback);
   }
 

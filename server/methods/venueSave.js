@@ -1,23 +1,25 @@
 Meteor.methods({
-  venueSave: function (curatedMedia, query) {
+  venueSave: function (curatedCount, curatedMedia, query) {
     var wrapped = Meteor.wrapAsync(venueSave);
-    return wrapped(curatedMedia, query);
+    return wrapped(curatedCount, curatedMedia, query);
   }
 });
 
-function venueSave(curatedMedia, query, callback) {
-  var modifier = {
-    $set: { curatedMedia: curatedMedia, sessionId: null },
-    $inc: { curated: 1 }
-  };
+function venueSave(curatedCount, curatedMedia, query, callback) {
+  var user = Meteor.users.findOne(Meteor.userId());
+  var modifier = { $set: { curatedMedia: curatedMedia, sessionId: null } };
 
-  Venues.update(query, modifier, updateCallback);
+  if (user.username === 'admin') {
+    _.extend(modifier, {$set: {curated: curatedCount}});
+  }else{
+    _.extend(modifier, {$inc: {curated: 1}});
+  }
 
-  function updateCallback(error, result) {
+  Venues.update(query, modifier, function (error, result) {
     if (!error) {
       callback(null, result);
     }else {
       callback(null, error);
     }
-  }
+  });
 }
